@@ -5,33 +5,11 @@
 #define RETUR_NHOME_SWITCH PB7
 
 void timerCallbackNRF() {
-    bool rslt = radioTX(dataToNRFStruct);
+  newDataToNRF = true;
 }
 
 void timerCallbackSerial() {
-  Serial.print("<");
-  Serial.print(dataToPcStruct.lat, 7);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.lon, 7);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.heading, 2);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.velocity, 2);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.numWaypoints);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.navMode);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.startNav);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.returnHome);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.battery, 2);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.sonic);
-  Serial.print(",");
-  Serial.print(dataToPcStruct.calibration);
-  Serial.println(">");
+  newDataToPC = true;
 }
 
 void setup() {
@@ -61,17 +39,9 @@ void loop() {
   dataToNRFStruct.startStop = digitalRead(START_STOP_SWITCH);
   dataToNRFStruct.returnHome = digitalRead(RETUR_NHOME_SWITCH);
 
-  dataToPcStruct.lat = dataFromNRFStruct.lat;
-  dataToPcStruct.lon = dataFromNRFStruct.lon;
-  dataToPcStruct.heading = dataFromNRFStruct.heading;
-  dataToPcStruct.velocity = dataFromNRFStruct.velocity;
-  dataToPcStruct.numWaypoints = dataFromNRFStruct.numWaypoints;
-  dataToPcStruct.navMode = (dataToNRFStruct.mode) ? 'A' : 'M';
-  dataToPcStruct.startNav = dataToNRFStruct.startStop;
-  dataToPcStruct.returnHome = dataToNRFStruct.returnHome;
-  dataToPcStruct.battery = dataFromNRFStruct.battery;
-  dataToPcStruct.sonic = dataFromNRFStruct.sonic;
-  dataToPcStruct.calibration = dataFromNRFStruct.calibration;
+  getRadioData();
+  sendDataToNRF();
+  sendDataToPC();
 
   delayMicroseconds(500);
 }
